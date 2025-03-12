@@ -1,0 +1,182 @@
+/* Allgemeines Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 15px 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+/* Logo */
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0073e6;
+}
+
+/* Navigation (Buttons oben rechts) */
+nav {
+    display: flex;
+    gap: 10px;
+}
+
+/* Buttons */
+.nav-button {
+    background-color: #0073e6;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.nav-button.secondary {
+    background-color: white;
+    color: #0073e6;
+    border: 1px solid #0073e6;
+}
+
+.nav-button:hover {
+    background-color: #005bb5;
+}
+
+.nav-button.secondary:hover {
+    background-color: #e6f2ff;
+}
+
+/* Hauptbereich */
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    padding-top: 80px;
+}
+
+/* Hero-Bereich */
+.hero {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+}
+
+.hero h1 {
+    color: #0073e6;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* CTA-Button */
+.cta-button {
+    background-color: #ffcc00;
+    color: black;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.cta-button:hover {
+    background-color: #e6b800;
+}
+
+/* Container für Formulare */
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 500px;
+    margin-top: 20px;
+}
+
+/* Eingabefelder */
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Formular-Button */
+button {
+    background-color: #0073e6;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #005bb5;
+}
+
+/* Fehlermeldungen */
+#message {
+    margin-top: 10px;
+    color: #d9534f;
+}
+/* Erfolgsmeldung Container */
+.success-message {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+}
+
+.success-message h2 {
+    color: #0073e6;
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.success-message p {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* CTA-Button */
+.cta-button {
+    background-color: #ffcc00;
+    color: black;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.cta-button:hover {
+    background-color: #e6b800;
+}

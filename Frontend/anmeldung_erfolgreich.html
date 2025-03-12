@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anmeldung erfolgreich</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer>
+        window.onload = async function () {
+            const token = localStorage.getItem("token");
+            const successContainer = document.getElementById("successContainer");
+            const userDataContainer = document.getElementById("userDataContainer");
+            
+            if (!token) {
+                // Update UI for not logged in state
+                document.getElementById("successTitle").innerText = "Anmeldung fehlgeschlagen!";
+                document.getElementById("successMessage").innerText = "Kein Token gefunden. Bitte einloggen.";
+                document.getElementById("ctaButton").innerText = "Zum Login";
+                document.getElementById("ctaButton").onclick = function() {
+                    window.location.href = 'login.html';
+                };
+                userDataContainer.style.display = "none";
+                return;
+            }
+            
+            try {
+                const response = await fetch("http://localhost:3000/me", {
+                    method: "GET",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const meresponse = await response.json();
+                    const data = meresponse.user;
+                    
+                    // Create table from user data
+                    const table = document.createElement("table");
+                    table.className = "user-data-table";
+                    
+                    // Create table header
+                    const thead = document.createElement("thead");
+                    const headerRow = document.createElement("tr");
+                    
+                    Object.keys(data).forEach(key => {
+                        const th = document.createElement("th");
+                        th.textContent = key;
+                        headerRow.appendChild(th);
+                    });
+                    
+                    thead.appendChild(headerRow);
+                    table.appendChild(thead);
+                    
+                    // Create table body
+                    const tbody = document.createElement("tbody");
+                    const dataRow = document.createElement("tr");
+                    
+                    Object.values(data).forEach(value => {
+                        const td = document.createElement("td");
+                        td.textContent = typeof value === 'object' ? JSON.stringify(value) : value;
+                        dataRow.appendChild(td);
+                    });
+                    
+                    tbody.appendChild(dataRow);
+                    table.appendChild(tbody);
+                    
+                    // Clear loading message and append table
+                    userDataContainer.innerHTML = '<h3>Deine Benutzerdaten:</h3>';
+                    userDataContainer.appendChild(table);
+                    
+                } else {
+                    userDataContainer.innerHTML = '<h3>Deine Benutzerdaten:</h3><p>Fehler beim Abrufen der Benutzerdaten.</p>';
+                }
+            } catch (error) {
+                console.error("Fehler bei der Anfrage:", error);
+                userDataContainer.innerHTML = '<h3>Deine Benutzerdaten:</h3><p>Server nicht erreichbar.</p>';
+            }
+        };
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem("token"); // Remove the JWT token
+            window.location.href = "start.html"; // Redirect to the start page
+        }
+    </script>
+    <style>
+        .user-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .user-data-table th, .user-data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .user-data-table th {
+            background-color: #f2f2f2;
+        }
+        .user-data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .logout-button {
+            background-color: red;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .logout-button:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Vinted</div>
+        <nav>
+            <button class="nav-button" onclick="window.location.href='start.html'">Startseite</button>
+            <button class="nav-button secondary">Angemeldet</button>
+        </nav>
+    </header>
+    <main>
+        <div id="successContainer" class="container success-message">
+            <h2 id="successTitle">Anmeldung erfolgreich!</h2>
+            <p id="successMessage">Willkommen zurück! Du hast dich erfolgreich angemeldet.</p>
+            <button id="ctaButton" class="cta-button" onclick="window.location.href='start.html'">Zur Startseite</button>
+
+            <!-- User data will be shown in the same container -->
+            <div id="userDataContainer">
+                <h3>Deine Benutzerdaten:</h3>
+                <p>Lade Benutzerdaten...</p>
+            </div>
+
+            <!-- Logout Button -->
+            <button class="logout-button" onclick="logout()">Logout</button>
+        </div>
+    </main>
+</body>
+</html>

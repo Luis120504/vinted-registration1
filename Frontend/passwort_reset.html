@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passwort zurücksetzen</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="passwort_reset.js"></script>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <h2>Passwort zurücksetzen</h2>
+            
+            <!-- E-Mail Eingabe für den Reset-Code -->
+            <form id="requestResetForm">
+                <input type="email" id="resetEmail" placeholder="E-Mail" required>
+                <button type="submit">Bestätigungscode senden</button>
+            </form>
+            
+            <!-- Eingabe des Bestätigungscodes und neues Passwort -->
+            <div id="resetSection" style="display: none;">
+                <input type="text" id="resetCode" placeholder="Bestätigungscode" required>
+                <input type="password" id="newPassword" placeholder="Neues Passwort" required>
+                <button id="resetButton">Passwort ändern</button>
+            </div>
+            
+            <p id="resetMessage"></p>
+        </div>
+    </main>
+</body>
+</html>

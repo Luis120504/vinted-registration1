@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrierung</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="app.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">Vinted</div>
+        <nav>
+            <button class="nav-button" onclick="window.location.href='start.html'">Startseite</button>
+            <button class="nav-button secondary" onclick="window.location.href='login.html'">Anmelden</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>Registrierung</h2>
+            <form id="registerForm">
+                <input type="text" id="firstname" placeholder="Vorname" required>
+                <input type="text" id="lastname" placeholder="Nachname" required>
+                <input type="email" id="email" placeholder="E-Mail" required>
+                <input type="text" id="username" placeholder="Benutzername" required>
+                <input type="password" id="password" placeholder="Passwort" required>
+
+                <h3>Adresse</h3>
+                <input type="text" id="street" placeholder="Straße" required>
+                <input type="text" id="house_number" placeholder="Hausnummer" required>
+                <input type="text" id="postal_code" placeholder="Postleitzahl" required>
+                <input type="text" id="city" placeholder="Ort" required>
+
+                <button type="submit">Registrieren</button>
+            </form>
+
+            <!-- Bestätigungscode-Feld (wird erst nach der Registrierung sichtbar) -->
+            <div id="confirmationSection" style="display: none;">
+                <h3>Bestätigungscode eingeben</h3>
+                <input type="text" id="confirmationCode" placeholder="Code eingeben" required>
+                <button id="confirmButton">Bestätigen</button>
+            </div>
+
+            <p id="message"></p>
+        </div>
+    </main>
+</body>
+</html>
