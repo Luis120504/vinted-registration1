@@ -5,69 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anmeldung erfolgreich</title>
     <link rel="stylesheet" href="styles.css">
+
     <script defer>
         window.onload = async function () {
-            const token = localStorage.getItem("token");
+            const token = localStorage.getItem("token"); // JWT-Token aus dem Local Storage abrufen
             const successContainer = document.getElementById("successContainer");
             const userDataContainer = document.getElementById("userDataContainer");
             
+            // Falls kein Token vorhanden ist, Benutzer zurück zum Login führen
             if (!token) {
-                // Update UI for not logged in state
                 document.getElementById("successTitle").innerText = "Anmeldung fehlgeschlagen!";
                 document.getElementById("successMessage").innerText = "Kein Token gefunden. Bitte einloggen.";
                 document.getElementById("ctaButton").innerText = "Zum Login";
                 document.getElementById("ctaButton").onclick = function() {
                     window.location.href = 'login.html';
                 };
-                userDataContainer.style.display = "none";
+                userDataContainer.style.display = "none"; // Benutzerdatenbereich ausblenden
                 return;
             }
             
             try {
+                // Anfrage an den Server senden, um Benutzerdaten abzurufen
                 const response = await fetch("http://localhost:3000/me", {
                     method: "GET",
-                    headers: { "Authorization": `Bearer ${token}` }
+                    headers: { "Authorization": `Bearer ${token}` } // Token zur Authentifizierung mitgeben
                 });
-                
+
                 if (response.ok) {
-                    const meresponse = await response.json();
+                    const meresponse = await response.json(); // Serverantwort in JSON umwandeln
                     const data = meresponse.user;
-                    
-                    // Create table from user data
+
+                    // Tabelle zur Anzeige der Benutzerdaten erstellen
                     const table = document.createElement("table");
                     table.className = "user-data-table";
-                    
-                    // Create table header
+
+                    // Tabellen-Header generieren
                     const thead = document.createElement("thead");
                     const headerRow = document.createElement("tr");
-                    
+
+                    // Spaltenüberschriften basierend auf den Schlüsseln der Benutzerdaten generieren
                     Object.keys(data).forEach(key => {
                         const th = document.createElement("th");
                         th.textContent = key;
                         headerRow.appendChild(th);
                     });
-                    
+
                     thead.appendChild(headerRow);
                     table.appendChild(thead);
-                    
-                    // Create table body
+
+                    // Tabellenkörper mit den Werten der Benutzerdaten füllen
                     const tbody = document.createElement("tbody");
                     const dataRow = document.createElement("tr");
-                    
+
                     Object.values(data).forEach(value => {
                         const td = document.createElement("td");
                         td.textContent = typeof value === 'object' ? JSON.stringify(value) : value;
                         dataRow.appendChild(td);
                     });
-                    
+
                     tbody.appendChild(dataRow);
                     table.appendChild(tbody);
-                    
-                    // Clear loading message and append table
+
+                    // Ladehinweis entfernen und Tabelle mit den Benutzerdaten anzeigen
                     userDataContainer.innerHTML = '<h3>Deine Benutzerdaten:</h3>';
                     userDataContainer.appendChild(table);
-                    
+
                 } else {
+                    // Falls die Daten nicht geladen werden konnten, Fehlermeldung anzeigen
                     userDataContainer.innerHTML = '<h3>Deine Benutzerdaten:</h3><p>Fehler beim Abrufen der Benutzerdaten.</p>';
                 }
             } catch (error) {
@@ -76,13 +80,15 @@
             }
         };
 
-        // Logout function
+        // Funktion für den Logout-Prozess
         function logout() {
-            localStorage.removeItem("token"); // Remove the JWT token
-            window.location.href = "start.html"; // Redirect to the start page
+            localStorage.removeItem("token"); // Token aus dem Local Storage entfernen
+            window.location.href = "start.html"; // Benutzer zur Startseite umleiten
         }
     </script>
+
     <style>
+        /* Stil für die Tabelle mit den Benutzerdaten */
         .user-data-table {
             width: 100%;
             border-collapse: collapse;
@@ -99,6 +105,8 @@
         .user-data-table tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+
+        /* Stil für den Logout-Button */
         .logout-button {
             background-color: red;
             color: white;
@@ -122,19 +130,20 @@
             <button class="nav-button secondary">Angemeldet</button>
         </nav>
     </header>
+
     <main>
         <div id="successContainer" class="container success-message">
             <h2 id="successTitle">Anmeldung erfolgreich!</h2>
             <p id="successMessage">Willkommen zurück! Du hast dich erfolgreich angemeldet.</p>
             <button id="ctaButton" class="cta-button" onclick="window.location.href='start.html'">Zur Startseite</button>
 
-            <!-- User data will be shown in the same container -->
+            <!-- Bereich zur Anzeige der Benutzerdaten -->
             <div id="userDataContainer">
                 <h3>Deine Benutzerdaten:</h3>
                 <p>Lade Benutzerdaten...</p>
             </div>
 
-            <!-- Logout Button -->
+            <!-- Logout-Button -->
             <button class="logout-button" onclick="logout()">Logout</button>
         </div>
     </main>

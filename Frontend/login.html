@@ -4,30 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    
+    <!-- CSS-Datei für das Styling -->
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- JavaScript-Datei zur Steuerung des Login-Prozesses (wird erst nach dem Laden der Seite ausgeführt) -->
     <script defer src="login.js"></script>
 </head>
 <body>
     <header>
-        <div class="logo">Vinted</div>
+        <div class="logo">Vinted</div> <!-- Logo der Anwendung -->
     </header>
 
     <main>
         <div class="container">
             <h2>Anmelden</h2>
+
+            <!-- Formular für die Anmeldung -->
             <form id="loginForm">
+                <!-- Eingabefelder für E-Mail und Passwort -->
                 <input type="email" id="email" placeholder="E-Mail" required>
                 <input type="password" id="password" placeholder="Passwort" required>
+
+                <!-- Button zum Absenden des Login-Formulars -->
                 <button type="submit">Login</button>
             </form>
+
+            <!-- Bereich für Erfolgsmeldungen oder Fehlermeldungen -->
             <p id="message"></p>
 
-            <!-- Passwort vergessen Link -->
+            <!-- Link zur Passwort-Zurücksetzen-Seite -->
             <p><a href="#" id="forgotPasswordLink">Passwort vergessen?</a></p>
         </div>
     </main>
 
     <script>
+        // Öffnet die Passwort-Zurücksetzen-Seite in einem neuen Popup-Fenster
         document.getElementById("forgotPasswordLink").addEventListener("click", function() {
             window.open("passwort_reset.html", "_blank", "width=400,height=400");
         });

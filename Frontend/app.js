@@ -1,6 +1,8 @@
+// Event-Listener für das Absenden des Registrierungsformulars
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Verhindert das Neuladen der Seite beim Absenden des Formulars
 
+    // Benutzerdaten aus den Eingabefeldern sammeln
     const formData = {
         firstname: document.getElementById("firstname").value,
         lastname: document.getElementById("lastname").value,
@@ -13,43 +15,47 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
         city: document.getElementById("city").value
     };
 
+    // API-Anfrage an den Server senden, um die Registrierung durchzuführen
     const response = await fetch("http://localhost:3000/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData), // Daten als JSON-String senden
     });
 
-    const result = await response.json();
+    const result = await response.json(); // Serverantwort in JSON umwandeln
 
     if (response.ok) {
         document.getElementById("message").innerText = "Registrierung erfolgreich!";
         
-        // Bestätigungscode-Feld anzeigen
+        // Bestätigungscode-Eingabefeld sichtbar machen
         document.getElementById("confirmationSection").style.display = "block";
 
-        // Neuer Tab mit Bestätigungscode öffnen
+        // Bestätigungscode in einem neuen Fenster anzeigen
         const confirmationTab = window.open("", "_blank");
         confirmationTab.document.write(`<h1>Bestätigungscode</h1><p>${result.confirmationCode}</p>`);
         confirmationTab.document.close();
     } else {
+        // Fehlermeldung anzeigen, falls die Registrierung fehlschlägt
         document.getElementById("message").innerText = "Fehler: " + result.error;
     }
 });
 
-// Bestätigungscode prüfen und bei Erfolg zur Startseite weiterleiten
+// Event-Listener für den Bestätigungscode-Button
 document.getElementById("confirmButton").addEventListener("click", async () => {
-    const email = document.getElementById("email").value;
-    const code = document.getElementById("confirmationCode").value;
+    const email = document.getElementById("email").value; // E-Mail-Adresse aus dem Eingabefeld abrufen
+    const code = document.getElementById("confirmationCode").value; // Bestätigungscode abrufen
 
+    // API-Anfrage an den Server senden, um den Bestätigungscode zu überprüfen
     const response = await fetch("http://localhost:3000/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code }),
     });
 
-    const result = await response.json();
+    const result = await response.json(); // Serverantwort in JSON umwandeln
 
     if (response.ok) {
+        // Erfolgsnachricht anzeigen
         document.getElementById("message").innerText = "Bestätigung erfolgreich! Du wirst in 3 Sekunden weitergeleitet...";
         
         // Nach 3 Sekunden auf die Startseite weiterleiten
@@ -57,6 +63,7 @@ document.getElementById("confirmButton").addEventListener("click", async () => {
             window.location.href = "start.html";
         }, 3000);
     } else {
+        // Fehlermeldung anzeigen, falls der Code falsch ist
         document.getElementById("message").innerText = "Fehler: " + result.error;
     }
 });

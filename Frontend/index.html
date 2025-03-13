@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrierung</title>
+    
+    <!-- CSS-Datei für das Styling -->
     <link rel="stylesheet" href="styles.css">
+
+    <!-- JavaScript-Datei zur Steuerung der Registrierung (wird erst nach dem Laden der Seite ausgeführt) -->
     <script defer src="app.js"></script>
 </head>
 <body>
     <header>
         <div class="logo">Vinted</div>
         <nav>
+            <!-- Navigation: Buttons zur Startseite und zur Anmeldung -->
             <button class="nav-button" onclick="window.location.href='start.html'">Startseite</button>
             <button class="nav-button secondary" onclick="window.location.href='login.html'">Anmelden</button>
         </nav>
@@ -19,7 +24,10 @@
     <main>
         <div class="container">
             <h2>Registrierung</h2>
+
+            <!-- Formular für die Registrierung -->
             <form id="registerForm">
+                <!-- Eingabefelder für Benutzerdaten -->
                 <input type="text" id="firstname" placeholder="Vorname" required>
                 <input type="text" id="lastname" placeholder="Nachname" required>
                 <input type="email" id="email" placeholder="E-Mail" required>
@@ -27,11 +35,13 @@
                 <input type="password" id="password" placeholder="Passwort" required>
 
                 <h3>Adresse</h3>
+                <!-- Eingabefelder für die Adresse des Benutzers -->
                 <input type="text" id="street" placeholder="Straße" required>
                 <input type="text" id="house_number" placeholder="Hausnummer" required>
                 <input type="text" id="postal_code" placeholder="Postleitzahl" required>
                 <input type="text" id="city" placeholder="Ort" required>
 
+                <!-- Button zum Absenden des Registrierungsformulars -->
                 <button type="submit">Registrieren</button>
             </form>
 
@@ -42,6 +52,7 @@
                 <button id="confirmButton">Bestätigen</button>
             </div>
 
+            <!-- Nachricht für Fehlermeldungen oder Erfolgsmeldungen -->
             <p id="message"></p>
         </div>
     </main>

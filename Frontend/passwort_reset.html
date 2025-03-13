@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Passwort zurücksetzen</title>
+    
+    <!-- CSS-Datei für das Styling -->
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- JavaScript-Datei für die Passwort-Zurücksetzen-Funktionalität -->
     <script defer src="passwort_reset.js"></script>
 </head>
 <body>
@@ -12,19 +16,25 @@
         <div class="container">
             <h2>Passwort zurücksetzen</h2>
             
-            <!-- E-Mail Eingabe für den Reset-Code -->
+            <!-- Formular zur Anforderung eines Bestätigungscodes -->
             <form id="requestResetForm">
+                <!-- Eingabefeld für die E-Mail-Adresse -->
                 <input type="email" id="resetEmail" placeholder="E-Mail" required>
+                <!-- Button zum Anfordern des Bestätigungscodes -->
                 <button type="submit">Bestätigungscode senden</button>
             </form>
             
-            <!-- Eingabe des Bestätigungscodes und neues Passwort -->
+            <!-- Bereich zur Eingabe des Bestätigungscodes und des neuen Passworts (anfangs versteckt) -->
             <div id="resetSection" style="display: none;">
+                <!-- Eingabefeld für den Bestätigungscode -->
                 <input type="text" id="resetCode" placeholder="Bestätigungscode" required>
+                <!-- Eingabefeld für das neue Passwort -->
                 <input type="password" id="newPassword" placeholder="Neues Passwort" required>
+                <!-- Button zum Bestätigen der Passwortänderung -->
                 <button id="resetButton">Passwort ändern</button>
             </div>
             
+            <!-- Bereich für Erfolgsmeldungen oder Fehlermeldungen -->
             <p id="resetMessage"></p>
         </div>
     </main>
