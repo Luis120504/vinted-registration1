@@ -11,12 +11,12 @@ const db = new sqlite3.Database("database.db");
 app.use(bodyParser.json());
 app.use(cors());
 
-const SECRET_KEY = "meinGeheimerSchlüssel"; // In einer .env Datei speichern!
+const SECRET_KEY = "meinGeheimerSchlüssel"; // Der geheime Schlüssel sollte in einer .env-Datei gespeichert werden
 
 let pendingUsers = {}; // Temporärer Speicher für unbestätigte Benutzer
 let resetCodes = {}; // Temporärer Speicher für Passwort-Reset-Codes
 
-// **Datenbank initialisieren**
+// Initialisierung der Datenbank und Erstellung der benötigten Tabellen, falls sie nicht existieren
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -39,22 +39,22 @@ db.serialize(() => {
     )`);
 });
 
-// **Hilfsfunktion zur Code-Generierung**
+// Funktion zur Generierung eines sechsstelligen Bestätigungscodes
 function generateConfirmationCode() {
-    return Math.floor(100000 + Math.random() * 900000).toString(); // 6-stelliger Code
+    return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// **Registrierung mit Bestätigungscode**
+// Endpoint zur Registrierung eines neuen Benutzers, erfordert eine Bestätigung per Code
 app.post("/register", async (req, res) => {
     const { firstname, lastname, email, username, password, street, house_number, postal_code, city } = req.body;
 
     if (!firstname || !lastname || !email || !username || !password || !street || !house_number || !postal_code || !city) {
-        return res.status(400).json({ error: "Bitte alle Felder ausfüllen!" });
+        return res.status(400).json({ error: "Alle Felder müssen ausgefüllt werden" });
     }
 
     db.get("SELECT email FROM users WHERE email = ?", [email], async (err, row) => {
         if (row) {
-            return res.status(400).json({ error: "Diese E-Mail wird bereits verwendet!" });
+            return res.status(400).json({ error: "Diese E-Mail wird bereits verwendet" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -73,22 +73,22 @@ app.post("/register", async (req, res) => {
             confirmationCode
         };
 
-        res.json({ message: "Bestätigungscode gesendet!", confirmationCode });
+        res.json({ message: "Bestätigungscode gesendet", confirmationCode });
     });
 });
 
-// **Bestätigungscode überprüfen**
+// Endpoint zur Bestätigung der Registrierung mit einem Code
 app.post("/confirm", (req, res) => {
     const { email, code } = req.body;
 
     const pendingUser = pendingUsers[email];
 
     if (!pendingUser) {
-        return res.status(400).json({ error: "Kein ausstehender Benutzer gefunden!" });
+        return res.status(400).json({ error: "Kein ausstehender Benutzer gefunden" });
     }
 
     if (pendingUser.confirmationCode !== code) {
-        return res.status(400).json({ error: "Falscher Bestätigungscode!" });
+        return res.status(400).json({ error: "Falscher Bestätigungscode" });
     }
 
     db.run(
@@ -111,42 +111,41 @@ app.post("/confirm", (req, res) => {
 
                     delete pendingUsers[email];
 
-                    res.json({ message: "Bestätigung erfolgreich! Dein Konto wurde erstellt." });
+                    res.json({ message: "Bestätigung erfolgreich, dein Konto wurde erstellt" });
                 }
             );
         }
     );
 });
 
-// **Login mit JWT-Token**
+// Login-Endpoint, gibt bei erfolgreicher Authentifizierung ein JWT-Token zurück
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
 
     db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
         if (!user) {
-            return res.status(400).json({ success: false, message: "Benutzer nicht gefunden." });
+            return res.status(400).json({ success: false, message: "Benutzer nicht gefunden" });
         }
 
         if (user.confirmed === 0) {
-            return res.status(400).json({ success: false, message: "Bitte bestätige zuerst deine Registrierung!" });
+            return res.status(400).json({ success: false, message: "Bitte bestätige zuerst deine Registrierung" });
         }
 
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) {
-            return res.status(400).json({ success: false, message: "Falsches Passwort!" });
+            return res.status(400).json({ success: false, message: "Falsches Passwort" });
         }
 
-        // Token erstellen
         const token = jwt.sign({ userId: user.id, email: user.email }, SECRET_KEY, { expiresIn: "1h" });
 
-        res.json({ success: true, message: "Login erfolgreich!", token });
+        res.json({ success: true, message: "Login erfolgreich", token });
     });
 });
 
-// **Middleware für geschützte Routen**
+// Middleware zur Überprüfung von JWT-Token für geschützte Routen
 const verifyToken = (req, res, next) => {
     const authHeader = req.header("Authorization");
-    if (!authHeader) return res.status(403).json({ error: "Kein Token vorhanden!" });
+    if (!authHeader) return res.status(403).json({ error: "Kein Token vorhanden" });
 
     const token = authHeader.replace("Bearer ", "");
     try {
@@ -154,22 +153,22 @@ const verifyToken = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (error) {
-        res.status(401).json({ error: "Ungültiges Token!" });
+        res.status(401).json({ error: "Ungültiges Token" });
     }
 };
 
-// **Geschützte Route - Benutzerdaten abrufen**
+// Geschützter Endpoint, um Benutzerdaten abzurufen
 app.get("/me", verifyToken, (req, res) => {
-    res.json({ message: "Willkommen!", user: req.user });
+    res.json({ message: "Benutzer erfolgreich authentifiziert", user: req.user });
 });
 
-// **Passwort-Reset-Code senden**
+// Endpoint zur Anforderung eines Passwort-Reset-Codes
 app.post("/request-password-reset", (req, res) => {
     const { email } = req.body;
 
     db.get("SELECT * FROM users WHERE email = ?", [email], (err, user) => {
         if (!user) {
-            return res.status(400).json({ error: "E-Mail nicht gefunden!" });
+            return res.status(400).json({ error: "E-Mail nicht gefunden" });
         }
 
         const resetCode = generateConfirmationCode();
@@ -177,35 +176,31 @@ app.post("/request-password-reset", (req, res) => {
 
         console.log(`Passwort-Reset-Code für ${email}: ${resetCode}`);
 
-        res.json({ message: "Bestätigungscode wurde gesendet!", confirmationCode: resetCode });
+        res.json({ message: "Reset-Code gesendet", confirmationCode: resetCode });
     });
 });
 
-// **Passwort zurücksetzen**
+// Endpoint zum Zurücksetzen des Passworts mit einem Bestätigungscode
 app.post("/reset-password", async (req, res) => {
     const { email, code, newPassword } = req.body;
 
-    if (!email || !code || !newPassword) {
-        return res.status(400).json({ error: "Bitte alle Felder ausfüllen!" });
-    }
-
     if (!resetCodes[email] || resetCodes[email] !== code) {
-        return res.status(400).json({ error: "Falscher oder abgelaufener Code!" });
+        return res.status(400).json({ error: "Ungültiger oder abgelaufener Reset-Code" });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     db.run("UPDATE users SET password = ? WHERE email = ?", [hashedPassword, email], (err) => {
         if (err) {
-            return res.status(500).json({ error: "Fehler beim Speichern des neuen Passworts!" });
+            return res.status(500).json({ error: "Fehler beim Speichern des neuen Passworts" });
         }
 
         delete resetCodes[email];
-        res.json({ message: "Passwort erfolgreich geändert!" });
+        res.json({ message: "Passwort erfolgreich geändert" });
     });
 });
 
-// **Server starten**
+// Startet den Server auf Port 3000
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Server läuft auf http://localhost:${PORT}`);
+    console.log(`Server läuft unter http://localhost:${PORT}`);
 });
